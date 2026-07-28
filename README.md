@@ -1,10 +1,10 @@
 # 🏥 Medical Equipment Rental & Pharmacy Management System
 
-A full-stack healthcare web application built using **Django REST Framework** and **React.js**. The system allows users to rent medical equipment, order medicines, and receive rule-based recovery kit recommendations based on their medical condition.
+A full-stack healthcare web application built using **Django REST Framework** and **React.js**. The platform enables users to rent medical equipment, order medicines, make secure (mock) payments, track bookings, and receive rule-based recovery kit recommendations based on their medical condition.
 
 ---
 
-# 📌 Features
+# ✨ Features
 
 ## 🔐 Authentication
 - User Registration
@@ -14,35 +14,52 @@ A full-stack healthcare web application built using **Django REST Framework** an
 
 ---
 
-## 🏥 Medical Equipment Module
-- Browse available medical equipment
-- View equipment details
-- Book equipment rentals
-- Track equipment bookings
-- Equipment availability management
+## 🏥 Medical Equipment Rental
+- Browse Medical Equipment
+- View Equipment Details
+- Rent Medical Equipment
+- Equipment Availability Management
+- My Bookings
+- Booking Status Tracking
+- Cancel Booking
+- Return Equipment Request
+- Admin Return Approval
+
+---
+
+## 💳 Payment Module
+- Mock Payment Integration
+- Payment Success Page
+- Automatic Transaction ID Generation
+- Booking Activation After Successful Payment
+
+> **Note:** The project currently uses a mock payment flow for demonstration purposes. It can be integrated with Razorpay or Stripe in the future.
 
 ---
 
 ## 💊 Pharmacy Module
-- View available medicines
-- Search medicines
-- Order medicines
-- Medicine image support
-- Stock status display
+
+### User Features
+- Browse Medicines
+- View Medicine Details
+- Search Medicines
+- Order Medicines
+- Medicine Images
+- Stock Availability
 
 ### Admin Features
-- Add new medicines
-- Edit medicine details
-- Delete medicines
-- Manage medicine inventory
+- Add Medicines
+- Update Medicines
+- Delete Medicines
+- Manage Inventory
 
 ---
 
 ## 🤖 Rule-Based AI Recovery Kit Recommendation
 
-The system recommends a recovery kit based on the selected medical condition.
+The application recommends a recovery kit based on the selected medical condition.
 
-Supported Conditions:
+### Supported Conditions
 
 - Knee Surgery
 - Hip Surgery
@@ -59,13 +76,21 @@ Each recommendation includes:
 
 ---
 
+## 🩺 Health Assistant
+
+A simple rule-based health assistant that helps users receive basic recovery recommendations based on their selected condition.
+
+---
+
 ## 📊 Admin Dashboard
 
 Administrators can manage:
 
 - Medical Equipment
+- Equipment Stock
 - Medicine Inventory
 - Equipment Bookings
+- Booking Status
 - Recovery Kits
 
 ---
@@ -90,19 +115,19 @@ Administrators can manage:
 # 📂 Project Structure
 
 ```
-medical-equipment-django/
+medical-equipment-rental-system/
 │
 ├── authentication/
 ├── backend/
-├── booking/
+├── bookings/
 ├── dashboard/
 ├── frontend/
 ├── media/
 ├── notifications/
+├── payments/
 ├── pharmacy/
 ├── rental/
 │
-├── db.sqlite3
 ├── manage.py
 ├── requirements.txt
 └── README.md
@@ -112,16 +137,17 @@ medical-equipment-django/
 
 # ⚙️ Installation
 
-## 1. Clone Repository
+## Clone Repository
 
 ```bash
-git clone <repository-url>
-cd medical-equipment-django
+git clone https://github.com/shilnasheri-ux/medical-equipment-rental-system.git
+
+cd medical-equipment-rental-system
 ```
 
 ---
 
-## 2. Backend Setup
+## Backend Setup
 
 Install dependencies
 
@@ -129,19 +155,19 @@ Install dependencies
 pip install -r requirements.txt
 ```
 
-Apply migrations
+Run migrations
 
 ```bash
 python manage.py migrate
 ```
 
-Run Django Server
+Start Django Server
 
 ```bash
 python manage.py runserver
 ```
 
-Backend runs at:
+Backend URL
 
 ```
 http://127.0.0.1:8000/
@@ -149,27 +175,19 @@ http://127.0.0.1:8000/
 
 ---
 
-## 3. Frontend Setup
+## Frontend Setup
 
 Open another terminal
 
 ```bash
 cd frontend
-```
 
-Install packages
-
-```bash
 npm install
-```
 
-Start React
-
-```bash
 npm start
 ```
 
-Frontend runs at:
+Frontend URL
 
 ```
 http://localhost:3000/
@@ -177,16 +195,27 @@ http://localhost:3000/
 
 ---
 
-# 🔑 API Authentication
+# 🔐 Authentication
 
-The project uses **JWT Authentication**.
+JWT Authentication is used for secure login.
 
-After login, the backend returns:
+After login the backend returns:
 
 - Access Token
 - Refresh Token
 
-These tokens are used to access protected APIs.
+These tokens are required to access protected APIs.
+
+---
+
+# 💳 Payment Workflow
+
+1. User books equipment.
+2. User selects a payment method.
+3. Payment record is created.
+4. A unique transaction ID is generated.
+5. Booking status becomes **Active**.
+6. Payment Success page is displayed.
 
 ---
 
@@ -194,45 +223,52 @@ These tokens are used to access protected APIs.
 
 This project includes a **Rule-Based AI Recommendation System**.
 
-Users select their medical condition, and the application recommends:
+The recommendation is generated using predefined rules based on the selected medical condition.
 
-- Suitable Medical Equipment
+Each recommendation includes:
+
+- Recommended Equipment
 - Estimated Rental Cost
-- Expected Recovery Period
-
-This feature is implemented using predefined rule-based logic.
+- Recovery Duration
 
 ---
 
-# 📦 Python Packages
-
-Dependencies are listed in **requirements.txt**.
-
-Main packages include:
+# 📦 Main Python Packages
 
 - Django
 - Django REST Framework
-- django-cors-headers
 - Simple JWT
+- django-cors-headers
 - Pillow
+
+---
+
+# 🚀 Future Enhancements
+
+- Razorpay Payment Gateway
+- Stripe Integration
+- Email Notifications
+- SMS Notifications
+- Online Consultation
+- Machine Learning Based Recommendations
 
 ---
 
 # 📸 Screenshots
 
-Screenshots can be added here in future.
+You can add screenshots after deployment.
 
 Example:
 
-```
-Home Page
-
-Equipment List
-
-Medicine Management
-
-Recovery Kit Recommendation
-```
+- Home Page
+- Equipment List
+- Equipment Details
+- Booking Page
+- Payment Page
+- Pharmacy
+- Health Assistant
+- Recovery Kit Recommendation
+- Admin Dashboard
 
 ---
 
@@ -242,8 +278,16 @@ Recovery Kit Recommendation
 
 Python Full Stack Developer
 
+**GitHub**
+
+https://github.com/shilnasheri-ux
+
+**LinkedIn**
+
+https://www.linkedin.com/in/shilna-sherin-81b059364
+
 ---
 
 # 📄 License
 
-This project was developed for educational and internship purposes.
+This project was developed for educational, internship, and portfolio purposes.
