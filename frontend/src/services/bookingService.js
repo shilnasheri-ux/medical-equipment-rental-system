@@ -57,7 +57,7 @@ export async function getBookingById(id) {
 
 export async function createPayment(payload) {
   try {
-    const response = await axiosInstance.post('payments/create/', payload);
+    const response = await axiosInstance.post('bookings/payments/create/', payload);
     return response.data;
   } catch (error) {
     throw new Error(

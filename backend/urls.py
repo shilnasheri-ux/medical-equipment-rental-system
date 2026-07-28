@@ -28,6 +28,8 @@ urlpatterns = [
 
     path('api/bookings/', include('bookings.urls')),
     
+    path("api/payments/", include("payments.urls")),
+    
     path('api/dashboard/', include('dashboard.urls', namespace='dashboard')),
     
     path("api/pharmacy/", include("pharmacy.urls")),

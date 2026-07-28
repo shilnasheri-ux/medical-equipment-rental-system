@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'pharmacy',
     
     "notifications",
+    'payments',
 ]
 
 MIDDLEWARE = [
