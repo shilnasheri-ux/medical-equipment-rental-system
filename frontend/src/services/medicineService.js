@@ -22,3 +22,14 @@ export const deleteMedicine = (id) =>
 
 export const placeMedicineOrder = (orderData) =>
   axiosInstance.post("/pharmacy/orders/", orderData);
+
+export const getMyMedicineOrders = () =>
+  axiosInstance.get("/pharmacy/orders/");
+
+export const getAllMedicineOrdersAdmin = () =>
+  axiosInstance.get("/pharmacy/admin/orders/");
+
+export const updateMedicineOrderStatus = (orderId, statusValue) =>
+  axiosInstance.patch(`/pharmacy/admin/orders/${orderId}/status/`, {
+    status: statusValue,
+  });

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getMedicineById, placeMedicineOrder } from "../services/medicineService";
+import { useParams, useNavigate } from "react-router-dom";
+import { getMedicineById } from "../services/medicineService";
 
 const MedicineOrderPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [medicine, setMedicine] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -13,7 +14,6 @@ const MedicineOrderPage = () => {
     const [deliveryAddress, setDeliveryAddress] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
 
-    const [placingOrder, setPlacingOrder] = useState(false);
     const [orderError, setOrderError] = useState(null);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const MedicineOrderPage = () => {
 
     const totalPrice = medicine ? (medicine.price * quantity).toFixed(2) : 0;
 
-    const handlePlaceOrder = async () => {
+    const handlePlaceOrder = () => {
         setOrderError(null);
 
         if (!quantity || quantity <= 0) {
@@ -52,38 +52,17 @@ const MedicineOrderPage = () => {
             return;
         }
 
-        const payload = {
-            medicine: medicine.id,
-            quantity: quantity,
-            delivery_address: deliveryAddress,
-            phone_number: phoneNumber
-        };
-
-        try {
-            setPlacingOrder(true);
-            const response = await placeMedicineOrder(payload);
-
-            if (response.data.success) {
-                alert(response.data.message || "Medicine order placed successfully.");
-                setQuantity(1);
-                setDeliveryAddress("");
-                setPhoneNumber("");
-            } else {
-                setOrderError(
-                    response.data.errors
-                        ? JSON.stringify(response.data.errors)
-                        : "Failed to place order."
-                );
-            }
-        } catch (err) {
-            setOrderError(
-                err.response?.data?.errors
-                    ? JSON.stringify(err.response.data.errors)
-                    : "Failed to place order. Please try again."
-            );
-        } finally {
-            setPlacingOrder(false);
-        }
+        navigate("/medicine-payment", {
+            state: {
+                mode: "medicine",
+                medicine_id: medicine.id,
+                medicine_name: medicine.name,
+                quantity,
+                delivery_address: deliveryAddress,
+                phone_number: phoneNumber,
+                total_amount: Number(totalPrice),
+            },
+        });
     };
 
     if (loading) {
@@ -166,9 +145,8 @@ const MedicineOrderPage = () => {
                     <button
                         className="btn btn-primary"
                         onClick={handlePlaceOrder}
-                        disabled={placingOrder}
                     >
-                        {placingOrder ? "Placing Order..." : "Place Order"}
+                        Place Order
                     </button>
                 </div>
             </div>

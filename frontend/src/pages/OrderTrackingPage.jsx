@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getBookingById } from '../services/bookingService';
+import { getBookingById, requestReturn, } from '../services/bookingService';
 
 const TIMELINE_STEPS = [
   { key: 'pending', label: 'Pending' },
@@ -74,7 +74,7 @@ function PaymentStatusBadge({ status }) {
 }
 
 function TrackingTimeline({ status }) {
-  const currentIndex = getStepIndex(status);
+  const currentIndex = Math.max(0, getStepIndex(status));
 
   return (
     <div className="d-flex flex-column">
@@ -162,6 +162,8 @@ function OrderTrackingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [requestingReturn, setRequestingReturn] = useState(false);
+
   const loadBooking = useCallback(async () => {
     try {
       setLoading(true);
@@ -170,7 +172,7 @@ function OrderTrackingPage() {
       const data = await getBookingById(bookingId);
       setBooking(data.booking);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Something went wrong.');
     } finally {
       setLoading(false);
     }
@@ -388,6 +390,106 @@ function OrderTrackingPage() {
         <div className="container" style={{ maxWidth: '760px', marginTop: '-2.5rem' }}>
           <div className="alert alert-warning rounded-4 ot-fade-in" role="alert">
             Booking not found.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isTrackingLocked = ["pending", "confirmed"].includes(booking.status);
+
+  if (isTrackingLocked) {
+    return (
+      <div style={{ minHeight: '70vh', backgroundColor: '#f4f7fc' }}>
+        <style>{scopedStyles}</style>
+        <div style={heroStyle} className="ot-hero-pad">
+          <div className="ot-hero-orb" style={{ width: '220px', height: '220px', top: '-80px', right: '-60px' }} />
+          <div className="container" style={{ maxWidth: '760px', position: 'relative' }}>
+            <div className="d-flex flex-wrap align-items-center gap-2 mb-3" style={{ opacity: 0.85, fontSize: '0.85rem' }}>
+              <Link to="/" style={{ color: '#fff', textDecoration: 'none' }}>Home</Link>
+              <span>→</span>
+              <Link to="/my-bookings" style={{ color: '#fff', textDecoration: 'none' }}>My Bookings</Link>
+              <span>→</span>
+              <span>Order Tracking</span>
+            </div>
+            <h1
+              style={{
+                fontFamily: "'Sora', sans-serif",
+                fontWeight: 800,
+                fontSize: 'clamp(1.8rem, 4vw, 2.4rem)',
+                marginBottom: '0.25rem',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Order Tracking
+            </h1>
+            <p style={{ opacity: 0.9, fontSize: '0.95rem', marginBottom: 0 }}>
+              Track your equipment booking in real time.
+            </p>
+          </div>
+        </div>
+        <div className="container" style={{ maxWidth: '760px', marginTop: '-2.5rem' }}>
+          <div
+            style={cardStyle}
+            className="ot-fade-in ot-card-padding text-center"
+          >
+            <div
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                backgroundColor: '#eaf2ff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.25rem',
+                fontSize: '1.6rem',
+              }}
+            >
+              🔒
+            </div>
+            <h5
+              style={{
+                fontFamily: "'Sora', sans-serif",
+                fontWeight: 700,
+                color: '#1a2035',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Tracking isn't available yet
+            </h5>
+            <p
+              style={{
+                color: '#6b7a99',
+                fontSize: '0.9rem',
+                marginBottom: '1.75rem',
+                maxWidth: '420px',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              }}
+            >
+              {booking.status === 'pending'
+                ? 'This booking is still awaiting admin approval. Tracking will be available after it is confirmed and paid for.'
+                : 'Order tracking will be available once payment for this booking is completed.'
+              }
+            </p>
+
+            <div className="d-flex flex-wrap justify-content-center gap-2">
+              
+              <button
+                className="btn rounded-3 fw-semibold ot-btn-outline"
+                style={{
+                  border: '1.5px solid #0f6fd8',
+                  color: '#0f6fd8',
+                  backgroundColor: 'transparent',
+                  padding: '0.7rem 1.4rem',
+                  fontSize: '0.9rem',
+                }}
+                onClick={() => navigate('/my-bookings')}
+              >
+                ← Back to My Bookings
+              </button>
+            </div>
           </div>
         </div>
       </div>

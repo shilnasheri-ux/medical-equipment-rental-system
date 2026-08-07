@@ -1,61 +1,87 @@
 # 🏥 Medical Equipment Rental & Pharmacy Management System
 
-A full-stack healthcare web application built using **Django REST Framework** and **React.js**. The platform enables users to rent medical equipment, order medicines, make secure (mock) payments, track bookings, and receive rule-based recovery kit recommendations based on their medical condition.
+A full-stack healthcare management platform built using **Django REST Framework** and **React.js**.
+
+The system allows users to rent medical equipment, order medicines, make secure (mock) payments, track bookings, monitor medicine orders, receive rule-based recovery kit recommendations, and enables administrators to manage equipment, medicines, bookings, inventory, and medicine orders through a centralized admin dashboard.
 
 ---
 
 # ✨ Features
 
 ## 🔐 Authentication
+
 - User Registration
 - User Login
 - JWT Authentication
-- Protected API Endpoints
+- Protected Routes
+- Role-based Access (User / Admin)
 
 ---
 
-## 🏥 Medical Equipment Rental
-- Browse Medical Equipment
-- View Equipment Details
-- Rent Medical Equipment
-- Equipment Availability Management
-- My Bookings
-- Booking Status Tracking
-- Cancel Booking
-- Return Equipment Request
-- Admin Return Approval
-
----
-
-## 💳 Payment Module
-- Mock Payment Integration
-- Payment Success Page
-- Automatic Transaction ID Generation
-- Booking Activation After Successful Payment
-
-> **Note:** The project currently uses a mock payment flow for demonstration purposes. It can be integrated with Razorpay or Stripe in the future.
-
----
-
-## 💊 Pharmacy Module
+# 🏥 Medical Equipment Rental
 
 ### User Features
+
+- Browse Medical Equipment
+- View Equipment Details
+- Equipment Availability Status
+- Book Medical Equipment
+- My Bookings
+- Booking Status Tracking
+- Order Tracking
+- Mock Payment Integration
+- Payment Success Page
+- Return Equipment Request
+
+### Admin Features
+
+- Add Equipment
+- Edit Equipment
+- Delete Equipment
+- Manage Equipment Stock
+- View Equipment Bookings
+- Approve Equipment Returns
+
+---
+
+# 💊 Pharmacy Module
+
+### User Features
+
 - Browse Medicines
 - View Medicine Details
 - Search Medicines
 - Order Medicines
 - Medicine Images
 - Stock Availability
+- Mock Payment for Medicine Orders
 
 ### Admin Features
+
 - Add Medicines
 - Update Medicines
 - Delete Medicines
-- Manage Inventory
+- Manage Medicine Inventory
+- View All Medicine Orders
+- Mark Orders as Delivered
+- Cancel Orders
 
 ---
 
-## 🤖 Rule-Based AI Recovery Kit Recommendation
+# 💳 Payment Module
+
+- Mock Payment Integration
+- Equipment Payment
+- Medicine Payment
+- Automatic Transaction ID Generation
+- Payment Success Page
+- Booking Activation After Successful Payment
+
+> **Note:** This project currently uses a mock payment workflow for demonstration purposes. It can easily be integrated with Razorpay or Stripe in the future.
+
+---
+
+# 🤖 Rule-Based Recovery Kit Recommendation
 
 The application recommends a recovery kit based on the selected medical condition.
 
@@ -76,13 +102,13 @@ Each recommendation includes:
 
 ---
 
-## 🩺 Health Assistant
+# 🩺 Health Assistant
 
-A simple rule-based health assistant that helps users receive basic recovery recommendations based on their selected condition.
+A simple rule-based health assistant that provides recovery suggestions based on the user's selected medical condition.
 
 ---
 
-## 📊 Admin Dashboard
+# 📊 Admin Dashboard
 
 Administrators can manage:
 
@@ -90,14 +116,24 @@ Administrators can manage:
 - Equipment Stock
 - Medicine Inventory
 - Equipment Bookings
+- Medicine Orders
 - Booking Status
+- Return Requests
 - Recovery Kits
+
+The dashboard also provides stock summary cards showing:
+
+- Total Stock
+- Reserved Stock
+- Active Stock
+- Available Stock
 
 ---
 
 # 🛠 Tech Stack
 
 ## Backend
+
 - Python
 - Django
 - Django REST Framework
@@ -105,6 +141,7 @@ Administrators can manage:
 - SQLite
 
 ## Frontend
+
 - React.js
 - Bootstrap 5
 - Axios
@@ -114,16 +151,13 @@ Administrators can manage:
 
 # 📂 Project Structure
 
-```
-medical-equipment-rental-system/
+```text
+medical-equipment-django/
 │
 ├── authentication/
-├── backend/
 ├── bookings/
-├── dashboard/
 ├── frontend/
 ├── media/
-├── notifications/
 ├── payments/
 ├── pharmacy/
 ├── rental/
@@ -140,9 +174,9 @@ medical-equipment-rental-system/
 ## Clone Repository
 
 ```bash
-git clone https://github.com/shilnasheri-ux/medical-equipment-rental-system.git
+git clone https://github.com/shilnasheri-ux/medical-equipment-django.git
 
-cd medical-equipment-rental-system
+cd medical-equipment-django
 ```
 
 ---
@@ -159,6 +193,12 @@ Run migrations
 
 ```bash
 python manage.py migrate
+```
+
+Create Superuser (Optional)
+
+```bash
+python manage.py createsuperuser
 ```
 
 Start Django Server
@@ -199,7 +239,7 @@ http://localhost:3000/
 
 JWT Authentication is used for secure login.
 
-After login the backend returns:
+After successful login the backend returns:
 
 - Access Token
 - Refresh Token
@@ -210,26 +250,35 @@ These tokens are required to access protected APIs.
 
 # 💳 Payment Workflow
 
+### Equipment Booking
+
 1. User books equipment.
-2. User selects a payment method.
-3. Payment record is created.
-4. A unique transaction ID is generated.
-5. Booking status becomes **Active**.
+2. User proceeds to payment.
+3. Mock payment is completed.
+4. Transaction ID is generated.
+5. Booking becomes Active.
 6. Payment Success page is displayed.
+
+### Medicine Order
+
+1. User places medicine order.
+2. Mock payment is completed.
+3. Order is created.
+4. Admin manages delivery status.
 
 ---
 
-# 🤖 AI Recommendation
+# 🤖 Recovery Kit Recommendation
 
-This project includes a **Rule-Based AI Recommendation System**.
+The application includes a **Rule-Based Recommendation System**.
 
-The recommendation is generated using predefined rules based on the selected medical condition.
+Recommendations are generated using predefined rules based on the selected medical condition.
 
 Each recommendation includes:
 
 - Recommended Equipment
 - Estimated Rental Cost
-- Recovery Duration
+- Estimated Recovery Duration
 
 ---
 
@@ -237,7 +286,7 @@ Each recommendation includes:
 
 - Django
 - Django REST Framework
-- Simple JWT
+- djangorestframework-simplejwt
 - django-cors-headers
 - Pillow
 
@@ -246,29 +295,13 @@ Each recommendation includes:
 # 🚀 Future Enhancements
 
 - Razorpay Payment Gateway
-- Stripe Integration
+- Stripe Payment Integration
 - Email Notifications
 - SMS Notifications
-- Online Consultation
+- AI Chatbot
 - Machine Learning Based Recommendations
-
----
-
-# 📸 Screenshots
-
-You can add screenshots after deployment.
-
-Example:
-
-- Home Page
-- Equipment List
-- Equipment Details
-- Booking Page
-- Payment Page
-- Pharmacy
-- Health Assistant
-- Recovery Kit Recommendation
-- Admin Dashboard
+- PDF Invoice Generation
+- Online Consultation
 
 ---
 
@@ -278,11 +311,11 @@ Example:
 
 Python Full Stack Developer
 
-**GitHub**
+### GitHub
 
 https://github.com/shilnasheri-ux
 
-**LinkedIn**
+### LinkedIn
 
 https://www.linkedin.com/in/shilna-sherin-81b059364
 

@@ -1,0 +1,354 @@
+/* ============================================
+   PaymentPage — Compact Medical Theme (Bootstrap 5)
+   Stripe/Razorpay-style tight checkout layout
+   ============================================ */
+
+:root {
+  --pp-primary: #2563eb;
+  --pp-primary-dark: #1d4ed8;
+  --pp-primary-soft: #eff6ff;
+  --pp-border: #e5e9f2;
+  --pp-text: #1e293b;
+  --pp-muted: #64748b;
+  --pp-green: #15803d;
+  --pp-green-bg: #f0fdf4;
+  --pp-green-border: #bbf7d0;
+  --pp-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+.pp-wrapper {
+  background-color: #ffffff;
+  min-height: 100vh;
+  padding: 0.9rem 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Centered shell, max-width ~1000px */
+.pp-shell {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: var(--pp-shadow);
+  border: 1px solid var(--pp-border);
+  overflow: hidden;
+}
+
+.pp-header {
+  border-bottom: 1px solid var(--pp-border);
+}
+
+.pp-title {
+  font-weight: 700;
+  font-size: clamp(1.2rem, 2.2vw, 1.45rem);
+  color: var(--pp-text);
+  line-height: 1.25;
+}
+
+.pp-subtitle {
+  font-size: 0.83rem;
+}
+
+/* Generic card used inside the shell */
+.pp-card {
+  background-color: #ffffff;
+  border: 1px solid var(--pp-border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.pp-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--pp-text);
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Payment details rows */
+.pp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--pp-border);
+  font-size: 0.86rem;
+}
+
+.pp-row-last {
+  border-bottom: none;
+  padding-top: 0.55rem;
+  align-items: center;
+}
+
+.pp-row-label {
+  color: var(--pp-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.pp-row-value {
+  font-weight: 600;
+  color: var(--pp-text);
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.pp-amount-label {
+  font-weight: 700;
+  color: var(--pp-text);
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.85rem;
+}
+
+/* Amount — most visually prominent figure on the left card */
+.pp-amount-inline {
+  font-weight: 800;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--pp-primary);
+  background-color: var(--pp-primary-soft);
+  padding: 0.3rem 0.65rem;
+  border-radius: 10px;
+}
+
+/* Selectable payment method cards */
+.pp-method-card {
+  position: relative;
+  border: 1.5px solid var(--pp-border);
+  border-radius: 12px;
+  padding: 0.6rem 0.4rem;
+  text-align: center;
+  cursor: pointer;
+  background-color: #ffffff;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  height: 100%;
+  min-height: 120px;
+}
+
+.pp-method-card:hover {
+  border-color: var(--pp-primary);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.12);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.pp-method-card-selected {
+  border-color: var(--pp-primary);
+  background-color: var(--pp-primary-soft);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.15);
+}
+
+.pp-method-card-selected:hover {
+  transform: translateY(-2px);
+}
+
+.pp-method-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--pp-text);
+  line-height: 1.15;
+}
+
+.pp-method-icon {
+  font-size: 1.5rem;
+  color: var(--pp-primary);
+}
+
+.pp-method-check {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: var(--pp-primary);
+  font-size: 0.8rem;
+}
+
+/* Booking summary card (right side) */
+.pp-summary-card {
+  background-color: #fafbff;
+  display: flex;
+  flex-direction: column;
+}
+
+.pp-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--pp-muted);
+  padding: 0.3rem 0;
+}
+
+.pp-summary-row-last {
+  padding-bottom: 0.4rem;
+}
+
+.pp-summary-value {
+  font-weight: 600;
+  color: var(--pp-text);
+  text-align: right;
+}
+
+.pp-divider {
+  border-top: 1.5px dashed var(--pp-border);
+  opacity: 1;
+  margin: 0.35rem 0 0.55rem;
+}
+
+.pp-total-amount {
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: var(--pp-primary);
+}
+
+/* Safe & secure box */
+.pp-secure-box {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background-color: var(--pp-green-bg);
+  border: 1px solid var(--pp-green-border);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  color: var(--pp-green);
+}
+
+.pp-secure-icon {
+  font-size: 1.2rem;
+}
+
+.pp-secure-box p {
+  font-size: 0.8rem;
+}
+
+/* Primary pay button — narrower and centered */
+.pp-pay-btn {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.pp-btn-primary {
+  background-color: var(--pp-primary);
+  color: #ffffff;
+  border: none;
+  font-size: 0.98rem;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+.pp-btn-primary:hover:not(:disabled) {
+  background-color: var(--pp-primary-dark);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.32);
+}
+
+.pp-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.pp-btn-primary:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pp-back-link {
+  color: var(--pp-muted);
+  text-decoration: none;
+  font-size: 0.83rem;
+  padding: 0.1rem 0.25rem;
+}
+
+.pp-back-link:hover {
+  color: var(--pp-primary);
+}
+
+.pp-spinner {
+  color: var(--pp-primary);
+}
+
+.pp-error-box {
+  background-color: #fff5f5;
+  border: 1px solid #fecaca;
+}
+
+.pp-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+/* Fade-in on load */
+.fade-in-up {
+  animation: ppFadeInUp 0.3s ease;
+}
+
+@keyframes ppFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Responsive tweaks
+   ============================================ */
+
+@media (min-width: 992px) {
+  .pp-wrapper {
+    padding: 1.25rem 0.75rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .pp-shell {
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .pp-wrapper {
+    padding: 0.6rem 0.4rem;
+  }
+  .pp-card {
+    padding: 0.85rem 0.9rem;
+  }
+  .pp-total-amount {
+    font-size: 1.15rem;
+  }
+  .pp-amount-inline {
+    font-size: 1.15rem;
+    padding: 0.25rem 0.5rem;
+  }
+  .pp-method-icon {
+    font-size: 1rem;
+  }
+  .pp-method-label {
+    font-size: 0.68rem;
+  }
+  .pp-pay-btn {
+    max-width: 100%;
+  }
+}

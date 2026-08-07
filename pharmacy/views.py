@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Medicine
 from .serializers import MedicineSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import permission_classes
 from .serializers import MedicineOrderSerializer
+from .models import MedicineOrder
 from django.db.models.deletion import ProtectedError
+from django.core.exceptions import ValidationError
 
 
 @api_view(["GET", "POST"])
@@ -113,13 +115,39 @@ def medicine_detail_view(request, pk):
         
             
     
-@api_view(["POST"])
+@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def place_medicine_order(request):
+    if request.method == "GET":
+        orders = MedicineOrder.objects.filter(
+            user=request.user
+        ).order_by('-ordered_at')
+
+        serializer = MedicineOrderSerializer(orders, many=True)
+
+        return Response(
+            {
+                "success": True,
+                "count": orders.count(),
+                "orders": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
     serializer = MedicineOrderSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save(user=request.user)
+        try:
+            serializer.save(user=request.user)
+        except ValidationError as e:
+            message = e.messages[0] if getattr(e, 'messages', None) else str(e)
+            return Response(
+                {
+                    "success": False,
+                    "message": message,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response(
             {
@@ -136,4 +164,83 @@ def place_medicine_order(request):
             "errors": serializer.errors,
         },
         status=status.HTTP_400_BAD_REQUEST,
+    )
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def admin_medicine_orders_list(request):
+    orders = MedicineOrder.objects.select_related('user', 'medicine').order_by('-ordered_at')
+
+    data = [
+        {
+            "id": order.id,
+            "user": order.user.username,
+            "medicine_name": order.medicine.name,
+            "quantity": order.quantity,
+            "total_price": order.total_price,
+            "phone_number": order.phone_number,
+            "delivery_address": order.delivery_address,
+            "status": order.status,
+            "status_display": order.get_status_display(),
+            "ordered_at": order.ordered_at,
+        }
+        for order in orders
+    ]
+
+    return Response(
+        {
+            "success": True,
+            "count": len(data),
+            "orders": data,
+        },
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def update_medicine_order_status(request, pk):
+    try:
+        order = MedicineOrder.objects.get(pk=pk)
+    except MedicineOrder.DoesNotExist:
+        return Response(
+            {"success": False, "message": "Medicine order not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    new_status = request.data.get("status")
+
+    if order.status != MedicineOrder.Status.PAID:
+        return Response(
+            {
+                "success": False,
+                "message": f"Cannot change status of an order that is already '{order.get_status_display()}'.",
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if new_status not in [MedicineOrder.Status.DELIVERED, MedicineOrder.Status.CANCELLED]:
+        return Response(
+            {
+                "success": False,
+                "message": "Invalid status. Allowed values: 'delivered', 'cancelled'.",
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    order.status = new_status
+    order.save(update_fields=["status", "updated_at"])
+
+    return Response(
+        {
+            "success": True,
+            "message": f"Order status updated to '{order.get_status_display()}'.",
+            "order": {
+                "id": order.id,
+                "status": order.status,
+                "status_display": order.get_status_display(),
+            },
+        },
+        status=status.HTTP_200_OK,
     )

@@ -23,7 +23,7 @@ def my_bookings_view(request):
 
     bookings = Booking.objects.filter(
         user=request.user
-    ).select_related('equipment')
+    ).select_related('equipment', 'payment')
 
     serializer = BookingSerializer(bookings, many=True)
 
@@ -84,8 +84,20 @@ def cancel_booking_view(request, pk):
             },
             status=status.HTTP_404_NOT_FOUND,
         )
+        
+    if booking.status not in [
+        Booking.Status.PENDING,
+        Booking.Status.CONFIRMED,
+    ]:
+        return Response(
+            {
+                "success": False,
+                "message": "This booking cannot be cancelled."
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-    booking.status = 'cancelled'
+    booking.status = Booking.Status.CANCELLED
     booking.notification = "❌ You cancelled this booking."
     booking.save()
 
@@ -102,7 +114,7 @@ def cancel_booking_view(request, pk):
 def booking_detail_view(request, pk):
 
     try:
-        booking = Booking.objects.get(
+        booking = Booking.objects.select_related('equipment', 'payment').get(
             pk=pk,
             user=request.user
         )
@@ -210,7 +222,8 @@ def admin_bookings_view(request):
 
     bookings = Booking.objects.select_related(
         "user",
-        "equipment"
+        "equipment",
+        "payment",
     ).all()
 
     serializer = BookingSerializer(bookings, many=True)

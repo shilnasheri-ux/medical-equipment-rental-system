@@ -10,6 +10,13 @@ class BookingSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    # Not a DB field on Booking — derived from the related Payment (if any),
+    # via Payment.payment_status. Defaults to "pending" when no Payment
+    # exists yet. This is what OrderTrackingPage already expects on
+    # `booking.payment_status`, and what MyBookingsPage now uses to decide
+    # whether to show "Pay Now" vs a "Paid" badge.
+    payment_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Booking
         fields = (
@@ -23,8 +30,15 @@ class BookingSerializer(serializers.ModelSerializer):
             'total_price',
             'return_requested',
             'created_at',
+            'payment_status',
         )
         read_only_fields = fields
+
+    def get_payment_status(self, obj):
+        payment = getattr(obj, 'payment', None)
+        if payment:
+            return payment.payment_status
+        return Payment.PaymentStatus.PENDING
 
 
 class BookingCreateSerializer(serializers.ModelSerializer):

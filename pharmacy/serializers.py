@@ -35,6 +35,7 @@ class MedicineSerializer(serializers.ModelSerializer):
         
 class MedicineOrderSerializer(serializers.ModelSerializer):
     medicine_name = serializers.CharField(source='medicine.name', read_only=True)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
 
     class Meta:
         model = MedicineOrder
@@ -47,6 +48,7 @@ class MedicineOrderSerializer(serializers.ModelSerializer):
             'delivery_address',
             'phone_number',
             'status',
+            'status_display',
             'ordered_at',
         ]
         read_only_fields = [
@@ -54,5 +56,6 @@ class MedicineOrderSerializer(serializers.ModelSerializer):
             'medicine_name',
             'total_price',
             'status',
+            'status_display',
             'ordered_at'
         ]

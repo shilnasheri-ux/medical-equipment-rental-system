@@ -72,11 +72,16 @@ function ReturnEquipmentPage() {
 
   const handleRequestReturn = async () => {
     setReturnError('');
+
     try {
       setSubmitting(true);
-      await requestReturn(bookingId);
+
+      const data = await requestReturn(bookingId);
+
+      setBooking(data.booking);      // booking update
       setRequestSubmitted(true);
       setShowSuccessAlert(true);
+
     } catch (err) {
       setReturnError(err.message);
     } finally {
@@ -488,8 +493,35 @@ function ReturnEquipmentPage() {
             Request Return
           </h5>
 
-          {status === 'active' && (
+          {status === 'active' && booking.return_requested && (
+            <div
+              className="d-flex align-items-start gap-3 p-4 rounded-4"
+              style={{ backgroundColor: '#eaf2ff', border: '1px solid #dbeafe' }}
+            >
+              <span style={{ fontSize: '1.5rem' }}>ℹ️</span>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Sora', sans-serif",
+                    fontWeight: 800,
+                    color: '#1e40af',
+                    fontSize: '0.95rem',
+                    marginBottom: '0.3rem',
+                  }}
+                >
+                  Return Request Submitted
+                </div>
+                <div style={{ color: '#1e40af', fontSize: '0.88rem', fontWeight: 600, lineHeight: 1.6 }}>
+                  Your return request has been submitted successfully.
+                  Our team will contact you soon to schedule pickup.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {status === 'active' && !booking.return_requested && (
             <>
+
               {/* Return information notice */}
               <div
                 className="d-flex align-items-start gap-2 p-3 rounded-3 mb-4"

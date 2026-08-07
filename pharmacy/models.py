@@ -139,11 +139,10 @@ class Medicine(models.Model):
 class MedicineOrder(models.Model):
 
     class Status(models.TextChoices):
-        PENDING   = 'pending',   'Pending'
+        PAID = 'paid', 'Paid'
         DELIVERED = 'delivered', 'Delivered'
         CANCELLED = 'cancelled', 'Cancelled'
 
-    # ── Relationships ──────────────────────────────────────────────────────────
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -151,11 +150,10 @@ class MedicineOrder(models.Model):
     )
     medicine = models.ForeignKey(
         Medicine,
-        on_delete=models.PROTECT,   # PROTECT so deleting a medicine doesn't
-        related_name='orders',       # silently delete a user's order history
+        on_delete=models.PROTECT,   
+        related_name='orders',    
     )
 
-    # ── Order details ──────────────────────────────────────────────────────────
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(
         max_digits=10,
@@ -164,15 +162,13 @@ class MedicineOrder(models.Model):
     delivery_address = models.TextField()
     phone_number = models.CharField(max_length=15)
 
-    # ── Status ─────────────────────────────────────────────────────────────────
     status = models.CharField(
         max_length=15,
         choices=Status.choices,
-        default=Status.PENDING,
+        default=Status.PAID,
         db_index=True,
     )
 
-    # ── Timestamp ──────────────────────────────────────────────────────────────
     ordered_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -187,19 +183,9 @@ class MedicineOrder(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        """
-        On first save only (new order):
-        1. Validate that enough stock exists.
-        2. Snapshot total_price from medicine.price × quantity.
-        3. Deduct quantity from medicine.stock_quantity.
-            The Medicine.save() override then recalculates stock_status
-            automatically, so we don't need to touch that field here.
-        """
-        is_new = self._state.adding   # True only when the row doesn't exist yet
+        is_new = self._state.adding   
 
         if is_new:
-            # Re-fetch medicine with a DB-level lock so two simultaneous orders
-            # can't both pass the stock check on the same row
             from django.db import transaction
             with transaction.atomic():
                 medicine = Medicine.objects.select_for_update().get(
@@ -212,16 +198,11 @@ class MedicineOrder(models.Model):
                         f'Only {medicine.stock_quantity} unit(s) in stock. '
                         f'You requested {self.quantity}.'
                     )
-
-                # Snapshot the price so historical orders aren't affected
-                # if the medicine price changes later
                 self.total_price = medicine.price * self.quantity
 
-                # Deduct stock — Medicine.save() updates stock_status automatically
                 medicine.stock_quantity -= self.quantity
                 medicine.save()
 
                 super().save(*args, **kwargs)
-                return  # already saved inside the transaction
-
+                return 
         super().save(*args, **kwargs)
