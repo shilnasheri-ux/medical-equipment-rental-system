@@ -32,7 +32,8 @@ class MedicineSerializer(serializers.ModelSerializer):
             "requires_prescription",
             "image",
         )
-        
+
+
 class MedicineOrderSerializer(serializers.ModelSerializer):
     medicine_name = serializers.CharField(source='medicine.name', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
@@ -59,3 +60,24 @@ class MedicineOrderSerializer(serializers.ModelSerializer):
             'status_display',
             'ordered_at'
         ]
+
+
+class MedicinePaymentCreateSerializer(serializers.Serializer):
+    """
+    Input validation for the pharmacy dummy-payment endpoint.
+    Mirrors bookings.PaymentCreateSerializer in shape/spirit, but for
+    medicine orders — the MedicineOrder is only created after this
+    payload validates and the dummy payment "succeeds".
+    """
+
+    PAYMENT_METHOD_CHOICES = (
+        ('upi', 'UPI'),
+        ('card', 'Card'),
+        ('cash', 'Cash'),
+    )
+
+    medicine_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+    delivery_address = serializers.CharField()
+    phone_number = serializers.CharField()
+    payment_method = serializers.ChoiceField(choices=PAYMENT_METHOD_CHOICES)

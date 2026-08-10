@@ -20,16 +20,47 @@ export const updateMedicine = (id, medicineData) =>
 export const deleteMedicine = (id) =>
   axiosInstance.delete(`/pharmacy/medicines/${id}/`);
 
+// Kept for backward compatibility. No longer called from the
+// "Place Order" button — order creation now happens only after
+// successful payment, via createMedicinePayment().
 export const placeMedicineOrder = (orderData) =>
   axiosInstance.post("/pharmacy/orders/", orderData);
 
-export const getMyMedicineOrders = () =>
-  axiosInstance.get("/pharmacy/orders/");
+export const createMedicinePayment = async (payload) => {
+  try {
+    const response = await axiosInstance.post("/pharmacy/payments/create/", payload);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      error.response?.data?.detail ||
+      "Payment failed. Please try again."
+    );
+  }
+};
 
-export const getAllMedicineOrdersAdmin = () =>
-  axiosInstance.get("/pharmacy/admin/orders/");
+export const getMyMedicineOrders = async () => {
+  try {
+    const response = await axiosInstance.get("/pharmacy/orders/my-orders/");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      error.response?.data?.detail ||
+      "Failed to load medicine orders. Please try again."
+    );
+  }
+};
 
-export const updateMedicineOrderStatus = (orderId, statusValue) =>
-  axiosInstance.patch(`/pharmacy/admin/orders/${orderId}/status/`, {
-    status: statusValue,
-  });
+export const getMedicineOrderById = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/pharmacy/orders/${id}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      error.response?.data?.detail ||
+      "Failed to load order. Please try again."
+    );
+  }
+};

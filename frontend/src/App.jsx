@@ -1,3 +1,4 @@
+// App.js
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -26,11 +27,11 @@ import BookingSuccessPage from "./pages/BookingSuccessPage";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import OrderTrackingPage from "./pages/OrderTrackingPage";
+import MedicineOrderTrackingPage from "./pages/MedicineOrderTrackingPage";
 import ReturnEquipmentPage from "./pages/ReturnEquipmentPage";
 import AdminEquipmentPage from "./pages/AdminEquipmentPage";
 import AdminBookingsPage from "./pages/AdminBookingsPage";
 import AdminMedicinePage from "./pages/AdminMedicinePage";
-import AdminMedicineOrdersPage from "./pages/AdminMedicineOrdersPage";
 
 function App() {
   return (
@@ -127,8 +128,12 @@ function App() {
             }
           />
 
+          {/* Pharmacy payment — reuses the EXACT same PaymentPage component
+              (pharmacy mode is detected internally via location.state.mode).
+              No :bookingId param here; the order details are passed via
+              navigate(state) from MedicineOrderPage. */}
           <Route
-            path="/medicine-payment"
+            path="/pharmacy-payment"
             element={
               <ProtectedRoute>
                 <PaymentPage />
@@ -150,6 +155,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderTrackingPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/medicine-order-tracking/:orderId"
+            element={
+              <ProtectedRoute>
+                <MedicineOrderTrackingPage />
               </ProtectedRoute>
             }
           />
@@ -186,15 +200,6 @@ function App() {
             element={
               <ProtectedRoute adminOnly={true}>
                 <AdminMedicinePage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin/medicine-orders"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <AdminMedicineOrdersPage />
               </ProtectedRoute>
             }
           />
