@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/',
+  baseURL: 'https://shilnasherin.pythonanywhere.com/api/',
 });
 
 axiosInstance.interceptors.request.use(
@@ -49,7 +49,7 @@ axiosInstance.interceptors.response.use(
         }
 
         const response = await axios.post(
-          'http://127.0.0.1:8000/api/auth/token/refresh/',
+          'https://shilnasherin.pythonanywhere.com/api/auth/token/refresh/',
           {
             refresh: refreshToken,
           }
