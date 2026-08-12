@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getBookingById, createPayment } from '../services/bookingService';
@@ -37,7 +37,7 @@ function PaymentPage() {
   const [selectedMethod, setSelectedMethod] = useState('upi');
   const [processing, setProcessing] = useState(false);
 
-  const loadBooking = async () => {
+  const loadBooking = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -48,9 +48,8 @@ function PaymentPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -83,7 +82,7 @@ function PaymentPage() {
     }
 
     loadBooking();
-  }, [bookingId, isMedicineMode]);
+  }, [bookingId, isMedicineMode, location.state, loadBooking]);
 
   const methodLabel = (key) =>
     PAYMENT_METHODS.find((m) => m.key === key)?.label || key;

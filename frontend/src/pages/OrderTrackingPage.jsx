@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getBookingById, requestReturn, } from '../services/bookingService';
+import { getBookingById } from '../services/bookingService';
 
 const TIMELINE_STEPS = [
   { key: 'pending', label: 'Pending' },
@@ -162,7 +162,6 @@ function OrderTrackingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const [requestingReturn, setRequestingReturn] = useState(false);
 
   const loadBooking = useCallback(async () => {
     try {

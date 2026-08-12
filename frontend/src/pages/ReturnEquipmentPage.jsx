@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getBookingById, requestReturn } from '../services/bookingService';
 
@@ -51,7 +51,7 @@ function ReturnEquipmentPage() {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [returnError, setReturnError] = useState('');
 
-  const loadBooking = async () => {
+  const loadBooking = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -63,12 +63,12 @@ function ReturnEquipmentPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookingId]);
 
   useEffect(() => {
     loadBooking();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [bookingId]);
+  }, [bookingId, loadBooking]);
 
   const handleRequestReturn = async () => {
     setReturnError('');

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchEquipmentById, fetchEquipmentList } from '../services/equipmentService';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -6,21 +6,6 @@ import ErrorAlert     from '../components/ErrorAlert';
 import BookingModal from '../components/booking/BookingModal';
 import { useAuth } from '../context/AuthContext';
 
-// ─── Small sub-components ────────────────────────────────────────────────────
-function InfoRow({ label, value }) {
-  if (value == null || value === '') return null;
-  return (
-    <div
-      className="d-flex justify-content-between align-items-start py-2"
-      style={{ borderBottom: '1px solid var(--brand-border)', fontSize: '0.875rem' }}
-    >
-      <span style={{ color: 'var(--brand-muted)', minWidth: '140px' }}>{label}</span>
-      <span style={{ color: 'var(--brand-text)', fontWeight: 500, textAlign: 'right' }}>
-        {value}
-      </span>
-    </div>
-  );
-}
 
 function AvailabilityBadge({ isAvailable }) {
   const ok = isAvailable !== false;
@@ -157,7 +142,7 @@ function EquipmentDetailPage() {
 
   const [relatedEquipment, setRelatedEquipment] = useState([]);
 
-  const loadEquipment = async () => {
+  const loadEquipment = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -170,12 +155,12 @@ function EquipmentDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     loadEquipment();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id]);
+  }, [id, loadEquipment]);
 
   // Load related equipment (same category, available, excluding current item)
   useEffect(() => {

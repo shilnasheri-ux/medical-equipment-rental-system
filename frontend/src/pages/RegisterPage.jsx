@@ -15,8 +15,6 @@ function RegisterPage() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPass, setShowPass] = useState(false);
-  const [showPass2, setShowPass2] = useState(false);
   const [focusedField, setFocusedField] = useState('');
   const [btnHover, setBtnHover] = useState(false);
 
@@ -276,7 +274,7 @@ if (errors.detail) return errors.detail;
               </label>
               <div className="position-relative">
                 <input
-                  type={showPass ? 'text' : 'password'}
+                  type="password"
                   id="password"
                   name="password"
                   className="form-control"
@@ -298,7 +296,7 @@ if (errors.detail) return errors.detail;
               </label>
               <div className="position-relative">
                 <input
-                  type={showPass2 ? 'text' : 'password'}
+                  type="password"
                   id="password2"
                   name="password2"
                   className="form-control"
