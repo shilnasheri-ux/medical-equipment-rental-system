@@ -20,9 +20,6 @@ export const updateMedicine = (id, medicineData) =>
 export const deleteMedicine = (id) =>
   axiosInstance.delete(`/pharmacy/medicines/${id}/`);
 
-// Kept for backward compatibility. No longer called from the
-// "Place Order" button — order creation now happens only after
-// successful payment, via createMedicinePayment().
 export const placeMedicineOrder = (orderData) =>
   axiosInstance.post("/pharmacy/orders/", orderData);
 
@@ -62,5 +59,26 @@ export const getMedicineOrderById = async (id) => {
       error.response?.data?.detail ||
       "Failed to load order. Please try again."
     );
+  }
+};
+
+export const getAllMedicineOrdersAdmin = async () => {
+  try {
+    const response = await axiosInstance.get("/pharmacy/orders/admin/");
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateMedicineOrderStatus = async (orderId, status) => {
+  try {
+    const response = await axiosInstance.patch(
+      `/pharmacy/orders/admin/${orderId}/status/`,
+      { status }
+    );
+    return response;
+  } catch (error) {
+    throw error;
   }
 };

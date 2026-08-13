@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -279,6 +279,73 @@ def medicine_order_detail_view(request, pk):
     return Response(
         {
             'success': True,
+            'order': MedicineOrderSerializer(order).data,
+        },
+        status=status.HTTP_200_OK,
+    )
+    
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def admin_medicine_orders_view(request):
+    """
+    Admin-only endpoint to view all medicine orders.
+    """
+
+    orders = MedicineOrder.objects.select_related(
+        'user',
+        'medicine'
+    ).all()
+
+    serializer = MedicineOrderSerializer(orders, many=True)
+
+    return Response(
+        {
+            'success': True,
+            'count': orders.count(),
+            'orders': serializer.data,
+        },
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAdminUser])
+def update_medicine_order_status_view(request, pk):
+    """
+    Admin-only endpoint to update medicine order status.
+    """
+
+    order = get_object_or_404(
+        MedicineOrder,
+        pk=pk
+    )
+
+    new_status = request.data.get('status')
+
+    allowed_statuses = [
+        MedicineOrder.Status.CONFIRMED,
+        MedicineOrder.Status.PREPARING,
+        MedicineOrder.Status.OUT_FOR_DELIVERY,
+        MedicineOrder.Status.DELIVERED,
+        MedicineOrder.Status.CANCELLED,
+    ]
+
+    if new_status not in allowed_statuses:
+        return Response(
+            {
+                'success': False,
+                'message': 'Invalid order status.',
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    order.status = new_status
+    order.save(update_fields=['status', 'updated_at'])
+
+    return Response(
+        {
+            'success': True,
+            'message': 'Order status updated successfully.',
             'order': MedicineOrderSerializer(order).data,
         },
         status=status.HTTP_200_OK,

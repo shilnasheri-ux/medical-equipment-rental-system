@@ -32,6 +32,7 @@ import ReturnEquipmentPage from "./pages/ReturnEquipmentPage";
 import AdminEquipmentPage from "./pages/AdminEquipmentPage";
 import AdminBookingsPage from "./pages/AdminBookingsPage";
 import AdminMedicinePage from "./pages/AdminMedicinePage";
+import AdminMedicineOrdersPage from "./pages/AdminMedicineOrdersPage";
 
 function App() {
   return (
@@ -200,6 +201,14 @@ function App() {
             element={
               <ProtectedRoute adminOnly={true}>
                 <AdminMedicinePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/medicine-orders"
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <AdminMedicineOrdersPage />
               </ProtectedRoute>
             }
           />
