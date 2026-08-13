@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-4re&2s#mua!nrd+x16n&d+h=##=_5y^izro02(*uqq@g31j6i5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "shilnasherin.pythonanywhere.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -84,6 +88,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "https://medical-equipment-rental-system-68uz.vercel.app",
+    "https://medical-equipment-rental-system-68u.vercel.app",
 ]
 
 # Media files (equipment images)
