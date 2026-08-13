@@ -98,7 +98,13 @@ function PaymentSuccessPage() {
             <div className="d-flex flex-wrap justify-content-center gap-2 ps-actions">
               <button
                 className="btn ps-btn-primary rounded-pill fw-semibold"
-                onClick={() => navigate("/my-bookings")}
+                onClick={() =>
+  navigate(
+    isMedicine
+      ? `/medicine-order-tracking/${location.state?.orderId}`
+      : "/my-bookings"
+  )
+}
               >
                 <i className="bi bi-calendar2-check me-2"></i>
                 {isMedicine ? "View My Orders" : "View My Bookings"}
