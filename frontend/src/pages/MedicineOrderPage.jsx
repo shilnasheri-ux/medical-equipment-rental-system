@@ -84,7 +84,7 @@ const MedicineOrderPage = () => {
                     <img
                         src={
                             medicine.image
-                                ? `http://127.0.0.1:8000${medicine.image}`
+                                ? `https://shilnasherin.pythonanywhere.com${medicine.image}`
                                 : "https://dummyimage.com/400x300/e9ecef/6c757d&text=Medicine"
                         }
                         alt={medicine.name}

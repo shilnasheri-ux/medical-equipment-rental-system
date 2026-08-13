@@ -6,6 +6,16 @@ The system allows users to rent medical equipment, order medicines, make secure 
 
 ---
 
+# 🚀 Live Demo
+
+**Frontend:**  
+https://medical-equipment-rental-system-68u.vercel.app/
+
+**Backend API:**  
+https://shilnasherin.pythonanywhere.com/
+
+---
+
 # ✨ Features
 
 ## 🔐 Authentication
@@ -207,11 +217,15 @@ Start Django Server
 python manage.py runserver
 ```
 
+Local Backend URL
+
+http://127.0.0.1:8000/
+
+---
+
 Backend URL
 
-```
-http://127.0.0.1:8000/
-```
+https://shilnasherin.pythonanywhere.com/
 
 ---
 
@@ -313,11 +327,11 @@ Python Full Stack Developer
 
 ### GitHub
 
-https://github.com/shilnasheri-ux
+[GitHub Profile](https://github.com/shilnasheri-ux)
 
 ### LinkedIn
 
-https://www.linkedin.com/in/shilna-sherin-81b059364
+[LinkedIn Profile](https://www.linkedin.com/in/shilna-sherin-81b059364)
 
 ---
 

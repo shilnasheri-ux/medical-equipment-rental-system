@@ -326,7 +326,7 @@ function AdminMedicinePage() {
                   <td>
                     {item.image ? (
                       <img
-  src={`http://127.0.0.1:8000${item.image}`}
+  src={`https://shilnasherin.pythonanywhere.com${item.image}`}
   alt={item.name}
   style={{
     width: '56px',
@@ -672,7 +672,11 @@ function AdminMedicinePage() {
                       {editExistingImage && (
                         <div className="mb-2">
                           <img
-                            src={editExistingImage}
+                            src={
+                              editExistingImage
+                              ? `https://shilnasherin.pythonanywhere.com${editExistingImage}`
+                              : ''
+                            }
                             alt="Current medicine"
                             style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
                           />
