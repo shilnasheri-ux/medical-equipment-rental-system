@@ -89,6 +89,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://medical-equipment-rental-system-68uz.vercel.app",
     "https://medical-equipment-rental-system-68u.vercel.app",
+    "https://medical-equipment-rental-system-68uz-git-main-shilna-project.vercel.app",
 ]
 
 # Media files (equipment images)
