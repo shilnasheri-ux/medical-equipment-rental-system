@@ -68,7 +68,7 @@ const MedicineDetailPage = () => {
               <img
                 src={
                     medicine.image
-                        ? `http://127.0.0.1:8000${medicine.image}`
+                        ? `https://shilnasherin.pythonanywhere.com${medicine.image}`
                         : PLACEHOLDER_IMAGE
                     }
                 alt={medicine.name || "Medicine"}
