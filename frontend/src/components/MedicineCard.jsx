@@ -27,7 +27,7 @@ const MedicineCard = ({ medicine }) => {
       <img
         src={
           image
-            ? `http://127.0.0.1:8000${image}`
+            ? `https://shilnasherin.pythonanywhere.com${image}`
             : PLACEHOLDER_IMAGE
         }
         alt={name || "Medicine"}
