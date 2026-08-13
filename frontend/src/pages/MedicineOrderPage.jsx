@@ -52,7 +52,7 @@ const MedicineOrderPage = () => {
             return;
         }
 
-        navigate("/medicine-payment", {
+        navigate("/pharmacy-payment", {
             state: {
                 mode: "medicine",
                 medicine_id: medicine.id,
