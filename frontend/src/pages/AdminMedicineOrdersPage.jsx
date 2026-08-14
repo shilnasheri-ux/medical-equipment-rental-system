@@ -6,14 +6,34 @@ import {
 } from "../services/medicineService";
 
 const STATUS_BADGE_CLASSES = {
-  paid: "bg-success",
-  delivered: "bg-primary",
+  pending: "bg-warning text-dark",
+  confirmed: "bg-info text-dark",
+  preparing: "bg-secondary",
+  out_for_delivery: "bg-primary",
+  delivered: "bg-success",
   cancelled: "bg-danger",
 };
 
+// Maps the current status to the single "next step" action available in
+// this fulfillment/tracking flow (not an approval system).
+const NEXT_ACTION_MAP = {
+  pending: { label: "Confirm Order", nextStatus: "confirmed" },
+  confirmed: { label: "Start Preparing", nextStatus: "preparing" },
+  preparing: { label: "Out for Delivery", nextStatus: "out_for_delivery" },
+  out_for_delivery: { label: "Mark as Delivered", nextStatus: "delivered" },
+  delivered: null,
+  cancelled: null,
+};
+
+// Cancellation is only available before the order reaches out_for_delivery.
+const CANCELLABLE_STATUSES = ["pending", "confirmed", "preparing"];
+
+function getNextAction(status) {
+  return NEXT_ACTION_MAP[status] || null;
+}
+
 function StatusBadge({ status, statusDisplay }) {
   const badgeClass = STATUS_BADGE_CLASSES[status] || "bg-secondary";
-
   return (
     <span className={`badge ${badgeClass}`}>
       {statusDisplay || status}
@@ -97,8 +117,8 @@ const AdminMedicineOrdersPage = () => {
   }
 
   if (error) {
-    return ( <ErrorState message={error} onRetry={fetchOrders} /> );
-    }
+    return <ErrorState message={error} onRetry={fetchOrders} />;
+  }
 
   return (
     <div className="container mt-4 mb-5">
@@ -137,6 +157,8 @@ const AdminMedicineOrdersPage = () => {
             <tbody>
               {orders.map((order) => {
                 const isUpdating = updatingId === order.id;
+                const nextAction = getNextAction(order.status);
+                const canCancel = CANCELLABLE_STATUSES.includes(order.status);
 
                 return (
                   <tr key={order.id}>
@@ -161,22 +183,28 @@ const AdminMedicineOrdersPage = () => {
                       })}
                     </td>
                     <td>
-                      {order.status === "paid" ? (
+                      {nextAction || canCancel ? (
                         <div className="d-flex flex-wrap gap-2">
-                          <button
-                            className="btn btn-sm btn-primary"
-                            onClick={() => handleStatusChange(order.id, "delivered")}
-                            disabled={isUpdating}
-                          >
-                            {isUpdating ? "Updating..." : "Mark as Delivered"}
-                          </button>
-                          <button
-                            className="btn btn-sm btn-danger"
-                            onClick={() => handleStatusChange(order.id, "cancelled")}
-                            disabled={isUpdating}
-                          >
-                            {isUpdating ? "Updating..." : "Cancel Order"}
-                          </button>
+                          {nextAction && (
+                            <button
+                              className="btn btn-sm btn-primary"
+                              onClick={() =>
+                                handleStatusChange(order.id, nextAction.nextStatus)
+                              }
+                              disabled={isUpdating}
+                            >
+                              {isUpdating ? "Updating..." : nextAction.label}
+                            </button>
+                          )}
+                          {canCancel && (
+                            <button
+                              className="btn btn-sm btn-danger"
+                              onClick={() => handleStatusChange(order.id, "cancelled")}
+                              disabled={isUpdating}
+                            >
+                              {isUpdating ? "Updating..." : "Cancel Order"}
+                            </button>
+                          )}
                         </div>
                       ) : (
                         <span className="text-muted">—</span>

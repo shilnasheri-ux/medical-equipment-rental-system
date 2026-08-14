@@ -136,15 +136,16 @@ class Medicine(models.Model):
 
         super().save(*args, **kwargs)
 
+
 class MedicineOrder(models.Model):
 
     class Status(models.TextChoices):
-        PENDING           = 'pending',           'Pending'
-        CONFIRMED         = 'confirmed',          'Confirmed'
-        PREPARING         = 'preparing',          'Preparing'
-        OUT_FOR_DELIVERY  = 'out_for_delivery',   'Out for Delivery'
-        DELIVERED         = 'delivered',          'Delivered'
-        CANCELLED         = 'cancelled',          'Cancelled'
+        PENDING          = 'pending',          'Pending'
+        CONFIRMED        = 'confirmed',        'Confirmed'
+        PREPARING        = 'preparing',        'Preparing'
+        OUT_FOR_DELIVERY = 'out_for_delivery', 'Out for Delivery'
+        DELIVERED        = 'delivered',        'Delivered'
+        CANCELLED        = 'cancelled',        'Cancelled'
 
     # ── Relationships ──────────────────────────────────────────────────────────
     user = models.ForeignKey(
@@ -168,6 +169,10 @@ class MedicineOrder(models.Model):
     phone_number = models.CharField(max_length=15)
 
     # ── Status ─────────────────────────────────────────────────────────────────
+    # Order tracking flow (NOT an approval system — payment already happened
+    # before this row exists; this only tracks fulfillment progress):
+    #   pending -> confirmed -> preparing -> out_for_delivery -> delivered
+    # Cancellation is allowed from pending / confirmed / preparing only.
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
